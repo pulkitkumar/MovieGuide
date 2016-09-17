@@ -13,23 +13,20 @@ import android.widget.RadioGroup;
 
 import com.esoxjem.movieguide.BaseApplication;
 import com.esoxjem.movieguide.R;
-import com.esoxjem.movieguide.listing.IMoviesListingPresenter;
-import com.esoxjem.movieguide.listing.MoviesListingPresenter;
 
 import javax.inject.Inject;
 
 /**
  * @author arun
  */
-public class SortingDialogFragment extends DialogFragment implements ISortingDialogView, RadioGroup.OnCheckedChangeListener
+public class SortingDialogFragment extends DialogFragment implements ISortingDialogView,
+        RadioGroup.OnCheckedChangeListener
 {
     private RadioGroup mSortingOptionsGroup;
-    private static IMoviesListingPresenter mMoviesListingPresenter;
     @Inject ISortingDialogPresenter mSortingDialogPresenter;
 
-    public static SortingDialogFragment newInstance(IMoviesListingPresenter moviesListingPresenter)
+    public static SortingDialogFragment newInstance()
     {
-        mMoviesListingPresenter = moviesListingPresenter;
         return new SortingDialogFragment();
     }
 
@@ -92,17 +89,14 @@ public class SortingDialogFragment extends DialogFragment implements ISortingDia
         {
             case R.id.most_popular:
                 mSortingDialogPresenter.onPopularMoviesSelected();
-                mMoviesListingPresenter.displayMovies();
                 break;
 
             case R.id.highest_rated:
                 mSortingDialogPresenter.onHighestRatedMoviesSelected();
-                mMoviesListingPresenter.displayMovies();
                 break;
 
             case R.id.favorites:
                 mSortingDialogPresenter.onFavoritesSelected();
-                mMoviesListingPresenter.displayMovies();
                 break;
         }
     }

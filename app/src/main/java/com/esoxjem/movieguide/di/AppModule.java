@@ -5,6 +5,10 @@ import android.content.Context;
 
 import com.esoxjem.movieguide.BaseApplication;
 
+import org.greenrobot.eventbus.EventBus;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,5 +29,12 @@ public class AppModule
     public Context provideContext()
     {
         return app;
+    }
+
+    @Provides
+    @Singleton
+    public EventBus provideEventBus()
+    {
+        return EventBus.getDefault();
     }
 }

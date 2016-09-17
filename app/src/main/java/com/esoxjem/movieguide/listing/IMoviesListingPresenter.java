@@ -9,4 +9,6 @@ public interface IMoviesListingPresenter
 {
     Subscription displayMovies();
     void setView(IMoviesListingView view);
+    void registerForEvents();
+    void unregisterForEvents();
 }

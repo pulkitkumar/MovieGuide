@@ -8,6 +8,8 @@ import com.esoxjem.movieguide.listing.MoviesListingPresenter;
 import com.esoxjem.movieguide.network.RequestHandler;
 import com.esoxjem.movieguide.sorting.SortingOptionStore;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -29,8 +31,9 @@ public class ListingModule
     }
 
     @Provides
-    IMoviesListingPresenter provideMovieListingPresenter(IMoviesListingInteractor interactor)
+    IMoviesListingPresenter provideMovieListingPresenter(IMoviesListingInteractor interactor,
+                                                         EventBus eventBus)
     {
-        return new MoviesListingPresenter(interactor);
+        return new MoviesListingPresenter(interactor, eventBus);
     }
 }

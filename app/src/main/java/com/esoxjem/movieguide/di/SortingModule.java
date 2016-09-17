@@ -10,6 +10,8 @@ import com.esoxjem.movieguide.sorting.SortingDialogInteractor;
 import com.esoxjem.movieguide.sorting.SortingDialogPresenter;
 import com.esoxjem.movieguide.sorting.SortingOptionStore;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -30,8 +32,8 @@ public class SortingModule
     }
 
     @Provides
-    ISortingDialogPresenter providePresenter(ISortingDialogInteractor interactor)
+    ISortingDialogPresenter providePresenter(ISortingDialogInteractor interactor, EventBus eventBus)
     {
-        return new SortingDialogPresenter(interactor);
+        return new SortingDialogPresenter(interactor, eventBus);
     }
 }

@@ -6,6 +6,7 @@ import com.esoxjem.movieguide.entities.Video;
 import com.esoxjem.movieguide.favorites.FavoritesInteractor;
 import com.esoxjem.movieguide.favorites.IFavoritesInteractor;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import rx.Subscriber;
@@ -18,7 +19,7 @@ import rx.schedulers.Schedulers;
  */
 public class MovieDetailsPresenter implements IMovieDetailsPresenter
 {
-    private IMovieDetailsView mMovieDetailsView;
+    private WeakReference<IMovieDetailsView> mMovieDetailsView;
     private IMovieDetailsInteractor mMovieDetailsInteractor;
     private IFavoritesInteractor mFavoritesInteractor;
 
@@ -31,13 +32,13 @@ public class MovieDetailsPresenter implements IMovieDetailsPresenter
     @Override
     public void setView(IMovieDetailsView view)
     {
-        mMovieDetailsView = view;
+        mMovieDetailsView = new WeakReference<>(view);
     }
 
     @Override
     public void showDetails(Movie movie)
     {
-        mMovieDetailsView.showDetails(movie);
+        mMovieDetailsView.get().showDetails(movie);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class MovieDetailsPresenter implements IMovieDetailsPresenter
                     @Override
                     public void onNext(List<Video> videos)
                     {
-                        mMovieDetailsView.showTrailers(videos);
+                        mMovieDetailsView.get().showTrailers(videos);
                     }
                 });
     }
@@ -89,7 +90,7 @@ public class MovieDetailsPresenter implements IMovieDetailsPresenter
                     @Override
                     public void onNext(List<Review> reviews)
                     {
-                        mMovieDetailsView.showReviews(reviews);
+                        mMovieDetailsView.get().showReviews(reviews);
                     }
                 });
     }
@@ -100,10 +101,10 @@ public class MovieDetailsPresenter implements IMovieDetailsPresenter
         boolean isFavorite = mFavoritesInteractor.isFavorite(movie.getId());
         if(isFavorite)
         {
-            mMovieDetailsView.showFavorited();
+            mMovieDetailsView.get().showFavorited();
         } else
         {
-            mMovieDetailsView.showUnFavorited();
+            mMovieDetailsView.get().showUnFavorited();
         }
     }
 
@@ -114,11 +115,11 @@ public class MovieDetailsPresenter implements IMovieDetailsPresenter
         if(isFavorite)
         {
             mFavoritesInteractor.unFavorite(movie.getId());
-            mMovieDetailsView.showUnFavorited();
+            mMovieDetailsView.get().showUnFavorited();
         } else
         {
             mFavoritesInteractor.setFavorite(movie);
-            mMovieDetailsView.showFavorited();
+            mMovieDetailsView.get().showFavorited();
         }
     }
 }

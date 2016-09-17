@@ -85,7 +85,7 @@ public class MoviesListingFragment extends Fragment implements IMoviesListingVie
 
     private void displaySortingOptions()
     {
-        DialogFragment sortingDialogFragment = SortingDialogFragment.newInstance(moviesPresenter);
+        DialogFragment sortingDialogFragment = SortingDialogFragment.newInstance();
         sortingDialogFragment.show(getFragmentManager(), "Select Quantity");
     }
 
@@ -152,6 +152,20 @@ public class MoviesListingFragment extends Fragment implements IMoviesListingVie
     {
         mCallback = null;
         super.onDetach();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        moviesPresenter.registerForEvents();
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        moviesPresenter.unregisterForEvents();
     }
 
     public interface Callback

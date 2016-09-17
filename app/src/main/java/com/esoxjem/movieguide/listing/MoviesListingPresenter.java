@@ -1,7 +1,12 @@
 package com.esoxjem.movieguide.listing;
 
 import com.esoxjem.movieguide.entities.Movie;
+import com.esoxjem.movieguide.entities.SortingSelectedEvent;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import rx.Subscriber;
@@ -15,18 +20,20 @@ import rx.schedulers.Schedulers;
  */
 public class MoviesListingPresenter implements IMoviesListingPresenter
 {
-    private IMoviesListingView mMoviesView;
+    private WeakReference<IMoviesListingView> mMoviesView;
     private IMoviesListingInteractor mMoviesInteractor;
+    private EventBus eventBus;
 
-    public MoviesListingPresenter(IMoviesListingInteractor interactor)
+    public MoviesListingPresenter(IMoviesListingInteractor interactor, EventBus bus)
     {
-        mMoviesInteractor = interactor;
+        this.mMoviesInteractor = interactor;
+        this.eventBus = bus;
     }
 
     @Override
     public void setView(IMoviesListingView view)
     {
-        mMoviesView = view;
+        mMoviesView = new WeakReference<>(view);
     }
 
     @Override
@@ -39,7 +46,7 @@ public class MoviesListingPresenter implements IMoviesListingPresenter
                     @Override
                     public void call()
                     {
-                        mMoviesView.loadingStarted();
+                        mMoviesView.get().loadingStarted();
                     }
                 })
                 .subscribe(new Subscriber<List<Movie>>()
@@ -53,14 +60,32 @@ public class MoviesListingPresenter implements IMoviesListingPresenter
                     @Override
                     public void onError(Throwable e)
                     {
-                        mMoviesView.loadingFailed(e.getMessage());
+                        mMoviesView.get().loadingFailed(e.getMessage());
                     }
 
                     @Override
                     public void onNext(List<Movie> movies)
                     {
-                        mMoviesView.showMovies(movies);
+                        mMoviesView.get().showMovies(movies);
                     }
                 });
+    }
+
+    @Subscribe
+    public void onEvent(SortingSelectedEvent event)
+    {
+        displayMovies();
+    }
+
+    @Override
+    public void registerForEvents()
+    {
+        eventBus.register(this);
+    }
+
+    @Override
+    public void unregisterForEvents()
+    {
+        eventBus.unregister(this);
     }
 }
